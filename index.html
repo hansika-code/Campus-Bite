@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CampusBite - Canteen Queue Optimizer</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f7fb;
+    color: #222;
+}
+
+/* NAVBAR */
+nav {
+    background: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+    color: #ff6b35;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, #ff6b35, #ff9f1c);
+    color: white;
+    text-align: center;
+    padding: 70px 20px;
+}
+
+.hero h1 {
+    font-size: 44px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 19px;
+    margin-bottom: 25px;
+}
+
+.hero button {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 30px;
+    background: white;
+    color: #ff6b35;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* STATS */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    padding: 35px 7%;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background: white;
+    width: 220px;
+    padding: 25px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+.stat h2 {
+    color: #ff6b35;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+/* SECTION */
+section {
+    padding: 55px 7%;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.title h2 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+/* PRIORITY */
+.priority-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.priority {
+    width: 280px;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+.priority h3 {
+    margin-bottom: 10px;
+}
+
+.first {
+    border-top: 6px solid #e63946;
+}
+
+.normal {
+    border-top: 6px solid #f4a261;
+}
+
+.last {
+    border-top: 6px solid #2a9d8f;
+}
+
+/* FOOD MENU */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.food {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    transition: 0.2s;
+}
+
+.food:hover {
+    transform: translateY(-5px);
+}
+
+.food .emoji {
+    font-size: 50px;
+}
+
+.food h3 {
+    margin: 10px 0;
+}
+
+.food p {
+    color: #ff6b35;
+    font-weight: bold;
+}
+
+.food button {
+    margin-top: 12px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 20px;
+    background: #ff6b35;
+    color: white;
+    cursor: pointer;
+}
+
+/* ORDER FORM */
+.order-box {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 3px 20px rgba(0,0,0,0.1);
+}
+
+.order-box label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.order-box input,
+.order-box select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    background: white;
+}
+
+.order-button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 15px;
+    background: #ff6b35;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.order-button:hover {
+    background: #e85b2a;
+}
+
+/* QUEUE */
+.queue-box {
+    max-width: 800px;
+    margin: auto;
+}
+
+.queue-item {
+    background: white;
+    padding: 18px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+
+.queue-info p {
+    margin-top: 6px;
+    color: #666;
+}
+
+.badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.badge.first {
+    background: #e63946;
+    border: none;
+}
+
+.badge.normal {
+    background: #f4a261;
+    border: none;
+}
+
+.badge.last {
+    background: #2a9d8f;
+    border: none;
+}
+
+.complete {
+    background: #222;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* FOOTER */
+footer {
+    background: #222;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    margin-top: 30px;
+}
+
+/* MOBILE */
+@media (max-width: 650px) {
+
+    nav {
+        padding: 15px;
+    }
+
+    nav a {
+        margin-left: 8px;
+        font-size: 13px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .queue-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+
+    <div class="logo">
+        🍔 CampusBite
+    </div>
+
+    <div>
+        <a href="#home">Home</a>
+        <a href="#menu">Menu</a>
+        <a href="#order">Order</a>
+        <a href="#queue">Queue</a>
+    </div>
+
+</nav>
+
+
+<!-- HERO -->
+<div class="hero" id="home">
+
+    <h1>
+        🍔 College Canteen Queue Optimizer
+    </h1>
+
+    <p>
+        Skip the long queue 🚀 Order Smart • Save Time • Eat Happy 😋
+    </p>
+
+    <button onclick="goToOrder()">
+        🍕 Order Now
+    </button>
+
+</div>
+
+
+<!-- STATISTICS -->
+<div class="stats">
+
+    <div class="stat">
+        <h2 id="peopleCount">0</h2>
+        <p>People in Queue</p>
+    </div>
+
+    <div class="stat">
+        <h2 id="waitTime">0 min</h2>
+        <p>Estimated Wait</p>
+    </div>
+
+    <div class="stat">
+        <h2 id="ordersCount">0</h2>
+        <p>Orders Today</p>
+    </div>
+
+</div>
+
+
+<!-- PRIORITY SECTION -->
+<section>
+
+    <div class="title">
+
+        <h2>
+            ⚡ Smart Priority System
+        </h2>
+
+        <p>
+            Choose your queue priority
+        </p>
+
+    </div>
+
+
+    <div class="priority-container">
+
+        <div class="priority first">
+
+            <h3>
+                🔴 First Priority
+            </h3>
+
+            <p>
+                Your order will be served first.
+            </p>
+
+        </div>
+
+
+        <div class="priority normal">
+
+            <h3>
+                🟠 Normal Priority
+            </h3>
+
+            <p>
+                Your order will be served normally.
+            </p>
+
+        </div>
+
+
+        <div class="priority last">
+
+            <h3>
+                🟢 Last Priority
+            </h3>
+
+            <p>
+                Your order will be served after others.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MENU -->
+<section id="menu">
+
+    <div class="title">
+
+        <h2>
+            🍴 Canteen Menu
+        </h2>
+
+        <p>
+            Choose your favourite food
+        </p>
+
+    </div>
+
+
+    <div class="food-grid">
+
+
+        <div class="food">
+
+            <div class="emoji">🍔</div>
+
+            <h3>Veg Burger</h3>
+
+            <p>₹60</p>
+
+            <button onclick="selectFood('Veg Burger')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🍕</div>
+
+            <h3>Pizza</h3>
+
+            <p>₹80</p>
+
+            <button onclick="selectFood('Pizza')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🥪</div>
+
+            <h3>Veg Sandwich</h3>
+
+            <p>₹50</p>
+
+            <button onclick="selectFood('Veg Sandwich')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🍟</div>
+
+            <h3>French Fries</h3>
+
+            <p>₹40</p>
+
+            <button onclick="selectFood('French Fries')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🥞</div>
+
+            <h3>Masala Dosa</h3>
+
+            <p>₹50</p>
+
+            <button onclick="selectFood('Masala Dosa')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🍜</div>
+
+            <h3>Noodles</h3>
+
+            <p>₹60</p>
+
+            <button onclick="selectFood('Noodles')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🍚</div>
+
+            <h3>Fried Rice</h3>
+
+            <p>₹70</p>
+
+            <button onclick="selectFood('Fried Rice')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🥟</div>
+
+            <h3>Samosa</h3>
+
+            <p>₹20</p>
+
+            <button onclick="selectFood('Samosa')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">☕</div>
+
+            <h3>Coffee</h3>
+
+            <p>₹25</p>
+
+            <button onclick="selectFood('Coffee')">
+                Select
+            </button>
+
+        </div>
+
+
+        <div class="food">
+
+            <div class="emoji">🥤</div>
+
+            <h3>Fresh Juice</h3>
+
+            <p>₹40</p>
+
+            <button onclick="selectFood('Fresh Juice')">
+                Select
+            </button>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ORDER SECTION -->
+<section id="order">
+
+    <div class="title">
+
+        <h2>
+            🛒 Place Your Order
+        </h2>
+
+        <p>
+            Enter your details and join the smart queue
+        </p>
+
+    </div>
+
+
+    <div class="order-box">
+
+
+        <label>
+            👤 Student Name
+        </label>
+
+        <input
+            type="text"
+            id="studentName"
+            placeholder="Enter your name"
+        >
+
+
+        <label>
+            🍴 Select Food
+        </label>
+
+        <select id="foodSelect">
+
+            <option value="">
+                -- Choose Food --
+            </option>
+
+            <option value="Veg Burger">
+                🍔 Veg Burger - ₹60
+            </option>
+
+            <option value="Pizza">
+                🍕 Pizza - ₹80
+            </option>
+
+            <option value="Veg Sandwich">
+                🥪 Veg Sandwich - ₹50
+            </option>
+
+            <option value="French Fries">
+                🍟 French Fries - ₹40
+            </option>
+
+            <option value="Masala Dosa">
+                🥞 Masala Dosa - ₹50
+            </option>
+
+            <option value="Noodles">
+                🍜 Noodles - ₹60
+            </option>
+
+            <option value="Fried Rice">
+                🍚 Fried Rice - ₹70
+            </option>
+
+            <option value="Samosa">
+                🥟 Samosa - ₹20
+            </option>
+
+            <option value="Coffee">
+                ☕ Coffee - ₹25
+            </option>
+
+            <option value="Fresh Juice">
+                🥤 Fresh Juice - ₹40
+            </option>
+
+        </select>
+
+
+        <label>
+            ⚡ Queue Priority
+        </label>
+
+        <select id="priority">
+
+            <option value="first">
+                🔴 First Priority
+            </option>
+
+            <option value="normal" selected>
+                🟠 Normal Priority
+            </option>
+
+            <option value="last">
+                🟢 Last Priority
+            </option>
+
+        </select>
+
+
+        <button
+            type="button"
+            class="order-button"
+            onclick="placeOrder()"
+        >
+            🚀 Join Smart Queue
+        </button>
+
+
+    </div>
+
+</section>
+
+
+<!-- LIVE QUEUE -->
+<section id="queue">
+
+    <div class="title">
+
+        <h2>
+            📋 Live Queue
+        </h2>
+
+        <p>
+            Orders are automatically arranged by priority
+        </p>
+
+    </div>
+
+
+    <div
+        class="queue-box"
+        id="queueList"
+    >
+
+        <p style="text-align:center;">
+            No orders yet. Be the first! 🎉
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <p>
+        🍔 CampusBite | College Canteen Queue Optimizer
+    </p>
+
+    <p style="margin-top:8px;">
+        Smart Queue • Less Waiting • Happy Students ❤️
+    </p>
+
+</footer>
+
+
+<!-- JAVASCRIPT -->
+<script>
+
+let orders = [];
+
+let orderNumber = 1;
+
+
+/* SELECT FOOD */
+function selectFood(food) {
+
+    document.getElementById("foodSelect").value = food;
+
+    document.getElementById("order").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+
+/* PLACE ORDER */
+function placeOrder() {
+
+    let name =
+        document.getElementById("studentName").value.trim();
+
+    let food =
+        document.getElementById("foodSelect").value;
+
+    let priority =
+        document.getElementById("priority").value;
+
+
+    /* NAME CHECK */
+    if (name === "") {
+
+        alert("⚠️ Please enter your name.");
+
+        document.getElementById("studentName").focus();
+
+        return;
+    }
+
+
+    /* FOOD CHECK */
+    if (food === "") {
+
+        alert("⚠️ Please select a food item.");
+
+        document.getElementById("foodSelect").focus();
+
+        return;
+    }
+
+
+    /* CREATE ORDER */
+    let newOrder = {
+
+        id: orderNumber,
+
+        name: name,
+
+        food: food,
+
+        priority: priority
+
+    };
+
+
+    /* ADD ORDER */
+    orders.push(newOrder);
+
+    orderNumber++;
+
+
+    /* SORT */
+    sortOrders();
+
+
+    /* UPDATE SCREEN */
+    updateQueue();
+
+    updateStats();
+
+
+    /* SUCCESS MESSAGE */
+    alert(
+        "🎉 ORDER PLACED SUCCESSFULLY!\n\n" +
+        "Order No: #" + newOrder.id + "\n" +
+        "Student: " + newOrder.name + "\n" +
+        "Food: " + newOrder.food + "\n" +
+        "Priority: " + getPriorityName(newOrder.priority)
+    );
+
+
+    /* CLEAR FORM */
+    document.getElementById("studentName").value = "";
+
+    document.getElementById("foodSelect").value = "";
+
+    document.getElementById("priority").value = "normal";
+
+}
+
+
+/* SORT QUEUE */
+function sortOrders() {
+
+    let priorityValue = {
+
+        first: 1,
+
+        normal: 2,
+
+        last: 3
+
+    };
+
+
+    orders.sort(function(a, b) {
+
+        return priorityValue[a.priority]
+             - priorityValue[b.priority];
+
+    });
+
+}
+
+
+/* GET PRIORITY NAME */
+function getPriorityName(priority) {
+
+    if (priority === "first") {
+
+        return "FIRST PRIORITY";
+
+    }
+
+
+    if (priority === "last") {
+
+        return "LAST PRIORITY";
+
+    }
+
+
+    return "NORMAL PRIORITY";
+
+}
+
+
+/* UPDATE QUEUE */
+function updateQueue() {
+
+    let queueList =
+        document.getElementById("queueList");
+
+
+    /* EMPTY QUEUE */
+    if (orders.length === 0) {
+
+        queueList.innerHTML =
+            "<p style='text-align:center;'>" +
+            "No orders yet. Be the first! 🎉" +
+            "</p>";
+
+        return;
+    }
+
+
+    queueList.innerHTML = "";
+
+
+    /* DISPLAY ORDERS */
+    orders.forEach(function(order, index) {
+
+        let item =
+            document.createElement("div");
+
+
+        item.className =
+            "queue-item";
+
+
+        item.innerHTML =
+
+            "<div class='queue-info'>" +
+
+                "<strong>" +
+                "Order #" + order.id +
+                " - " + order.name +
+                "</strong>" +
+
+                "<p>" +
+                "🍴 " + order.food +
+                "</p>" +
+
+            "</div>" +
+
+
+            "<div>" +
+
+                "<span class='badge " +
+                order.priority +
+                "'>" +
+
+                getPriorityName(order.priority) +
+
+                "</span>" +
+
+
+                "<button " +
+                "class='complete' " +
+                "onclick='completeOrder(" +
+                index +
+                ")'>" +
+
+                "✓ Done" +
+
+                "</button>" +
+
+            "</div>";
+
+
+        queueList.appendChild(item);
+
+    });
+
+}
+
+
+/* COMPLETE ORDER */
+function completeOrder(index) {
+
+    orders.splice(index, 1);
+
+    updateQueue();
+
+    updateStats();
+
+}
+
+
+/* UPDATE STATISTICS */
+function updateStats() {
+
+    document.getElementById("peopleCount").innerText =
+        orders.length;
+
+
+    document.getElementById("waitTime").innerText =
+        (orders.length * 5) + " min";
+
+
+    document.getElementById("ordersCount").innerText =
+        orderNumber - 1;
+
+}
+
+
+/* GO TO ORDER */
+function goToOrder() {
+
+    document.getElementById("order").scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+/* INITIAL LOAD */
+updateStats();
+
+</script>
+
+</body>
+</html>
